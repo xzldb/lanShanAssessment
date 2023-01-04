@@ -15,15 +15,15 @@ def ping_check(ip):
     data = check.stdout.read()
     data = data.decode('GBK')  # 将前面传入的数据以gbk格式进行解码
 
-    if 'TTL' in data:
-        print('The host {0} is up'.format(ip))  # 将ip赋值进前面的括号内
+    if 'TTL' in data:  # 若data中包含ttl，证明主机存活，返回目标主机ip地址
+        print('The host {0} is up'.format(ip))
 
 
 # 多线程执行
-def main(ip):
+def main(ip_add):
     # ip = '192.168.1.'
     for i in range(1, 255):
-        new_ip = ip + str(i)
+        new_ip = ip_add + str(i)
         thread_max.acquire()
         t = threading.Thread(target=ping_check, args=(new_ip,))
         # 创建新线程执行ping_check，同时赋值ip=new_ip
@@ -33,9 +33,9 @@ def main(ip):
         t.join()
 
 
-ip = input("Please input ip (192.168.1.1): ")
+ip_add = input("Please input ip (示例：192.168.1.1): ")
 print('Start scanning......Please wait...')
 start = time.time()
-main(ip[:-1])
+main(ip_add[:-1])  # 取ip_add的除最后一个元素之外的值
 end = time.time()
 print("------------耗时{0:.5f}秒------------".format(end - start))
