@@ -1,7 +1,9 @@
 import time
 from subprocess import Popen, PIPE
 import threading
+import re
 
+pattern = re.compile(r'TTL=[1-9][0-9]*')
 threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(255)  # 最大信号量
 
@@ -14,9 +16,18 @@ def ping_check(ip):
     # stdin与stdout为输入输出命令同时用PIPE将一个函数结果直接导入另一个函数
     data = check.stdout.read()
     data = data.decode('GBK')  # 将前面传入的数据以gbk格式进行解码
-
     if 'TTL' in data:  # 若data中包含ttl，证明主机存活，返回目标主机ip地址
+        temp = re.search(pattern, data).group(0)
+        ttl = temp.split('=')[1]
         print('The host {0} is up'.format(ip))
+        if int(ttl) <= 32:
+            print('对方系统是WIN95/98/ME')
+        elif int(ttl) <= 64:
+            print('对方系统是LINUX')
+        elif int(ttl) <= 128:
+            print('对方系统是WINNT/2K/XP')
+        elif int(ttl) <= 256:
+            print('对方系统是UNIX')
 
 
 # 多线程执行
