@@ -31,7 +31,7 @@ def ping_check(ip):
 
 
 # 多线程执行
-def main(ip_add):
+def multi_threading_scanning(ip_add):
     # ip = '192.168.1.'
     for i in range(1, 255):
         new_ip = ip_add + str(i)
@@ -44,9 +44,11 @@ def main(ip_add):
         t.join()
 
 
-ip_add = input("Please input ip (示例：192.168.1.1): ")
-print('Start scanning......Please wait...')
-start = time.time()
-main(ip_add[:-1])  # 取ip_add的除最后一个元素之外的值
-end = time.time()
-print("------------耗时{0:.5f}秒------------".format(end - start))
+# 开始
+def begin():
+    ip_add = input("Please input ip (示例：192.168.1.1): ")
+    print('Start scanning......Please wait...')
+    start = time.time()
+    multi_threading_scanning(ip_add[:-1])  # 取ip_add的除最后一个元素之外的值
+    end = time.time()
+    print("------------耗时{0:.5f}秒------------".format(end - start))

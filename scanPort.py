@@ -3,7 +3,6 @@ import sys
 import threading
 import time
 
-
 threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(65535)  # 最大信号量
 # 发现端口的数量
@@ -11,7 +10,7 @@ count = 0
 
 
 #  扫描端口模块
-def scanPort(port, count=0):
+def scan_port(port, host, count=0):
     sk = socket.socket()
     sk.settimeout(0.5)  # 等待端口响应时间
     conn_result = sk.connect_ex((host, port))  # 尝试访问连接然后保存返回值，若为0则为端口开放
@@ -24,10 +23,10 @@ def scanPort(port, count=0):
 
 
 #  多线程
-def main(port):
+def multi_threading_port(port, port_end, port_start, host):
     for i in range(int(port_end) - int(port_start)):
         thread_max.acquire()
-        t = threading.Thread(target=scanPort, args=(port,))
+        t = threading.Thread(target=scan_port, args=(port, host,))
         # 创建新线程执行scanPort，同时赋值ip=new_port
         threads.append(t)
         t.start()
@@ -36,6 +35,7 @@ def main(port):
         t.join()
 
 
+# 查询端口服务字典
 def port_server(port_number):
     port_servers_dic = {21: 'FTP（File Transfer Protocol，文件传输协议）', 22: 'SSH（Secure Shell Protocol，安全外壳协议）',
                         23: 'Telnet（远程终端协议）	', 25: 'STMP（Simple Mail Transfer Protocol，简单邮件传输协议）',
@@ -52,22 +52,24 @@ def port_server(port_number):
                         6379: 'Redis数据库	', 7001: 'WebLogic', 8080: 'Apache/Tomcat/Nginx等中间件	',
                         11211: 'Memcache服务	', 27017: 'MongoDB数据库	'}
     for p, s in port_servers_dic.items():
-            if int(port_number) == p:
-                print(f'该端口的服务为{s}')
+        if int(port_number) == p:
+            print(f'该端口的服务为{s}')
 
 
-
-host = input('请输入服务器ip地址:')
-ports = input('请输入要扫描的端口范围，格式0-65535:')
-start = time.time()
-port_start, port_end = ports.split('-')  # 以’-‘为分割符
-h, o, s, t = host.split(".")
-if not 65535 >= int(port_end) > int(port_start) >= 0 or not 255 > int(h) > 0 or not 255 > int(o) > 0 or not 255 > int(
+# 开始
+def begin():
+    host = input('请输入服务器ip地址:')
+    ports = input('请输入要扫描的端口范围，格式0-65535:')
+    start = time.time()
+    port_start, port_end = ports.split('-')  # 以’-‘为分割符
+    h, o, s, t = host.split(".")
+    if not 65535 >= int(port_end) > int(port_start) >= 0 or not 255 > int(h) > 0 or not 255 > int(
+            o) > 0 or not 255 > int(
         s) > 0 or not 255 > int(t) > 0:
-    print("ip地址有误，请重新输入")
-    sys.exit()
-main(port_start)
-print('端口服务为默认端口的情况，不排除自己改端口，所以服务有可能错误')
-end = time.time()
-print("------------耗时{0:.5f}秒------------".format(end - start))
+        print("ip地址有误，请重新输入")
+        sys.exit()
+    multi_threading_port(port_start, port_end, port_start, host)
+    print('端口服务为默认端口的情况，不排除自己改端口，所以服务显示有可能错误')
+    end = time.time()
+    print("------------耗时{0:.5f}秒------------".format(end - start))
 # 能跑但是会爆一堆红字，不知道为啥，先写其他的去了
