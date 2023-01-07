@@ -6,3 +6,5 @@ if int(target) == 1:
     hostScanning.begin()
 elif int(target) == 2:
     scanPort.begin()
+else:
+    print('输入有误，请重新输入')
