@@ -33,7 +33,7 @@ def ping_check(ip):
 
 
 # 多线程执行
-def multi_threading_scanning(host_number,t):
+def multi_threading_scanning(host_number, t):
     for i in range(1, int(t)):
         new_host_number = int(host_number) + i
         new_host = ipaddress.ip_network(new_host_number)  # 输出不为str类型的值，记得转换！！！
@@ -57,9 +57,9 @@ def begin():
         print("ip地址有误，请重新输入")
         sys.exit()
     host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
-    t=input("请输入你想沿当前ip往后查询多少个地址：")
+    t = input("请输入你想沿当前ip往后查询多少个地址：")
     print('Start scanning......Please wait...')
-    multi_threading_scanning(host_number,t)  # 取ip_add的除最后一个元素之外的值
+    multi_threading_scanning(host_number, t)  # 取ip_add的除最后一个元素之外的值
     end = time.time()
     print("------------耗时{0:.5f}秒------------".format(end - start))
 
