@@ -64,8 +64,7 @@ def begin():
     port_start, port_end = ports.split('-')  # 以’-‘为分割符
     h, o, s, t = host.split(".")
     if not 65535 >= int(port_end) > int(port_start) >= 0 or not 255 > int(h) > 0 or not 255 > int(
-            o) > 0 or not 255 > int(
-        s) > 0 or not 255 > int(t) > 0:
+            o) > 0 or not 255 > int(s) > 0 or not 255 > int(t) > 0:
         print("ip地址有误，请重新输入")
         sys.exit()
     multi_threading_port(port_start, port_end, port_start, host)

@@ -82,5 +82,3 @@ def begin():
     multi_threading_scanning(host_number, t)  # 取ip_add的除最后一个元素之外的值
     end = time.time()
     print("------------耗时{0:.5f}秒------------".format(end - start))
-
-
