@@ -1,0 +1,11 @@
+name: echo demo
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: run demo
+        run: pwd
+        
