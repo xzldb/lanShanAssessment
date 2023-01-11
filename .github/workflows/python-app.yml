@@ -38,3 +38,6 @@ jobs:
       run: |
         cd src
         python maintest.py
+        cd ..
+        docker build -t demo_f:v0 .
+      
