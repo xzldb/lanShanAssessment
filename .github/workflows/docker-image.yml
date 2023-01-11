@@ -17,4 +17,4 @@ jobs:
     - name: Build the Docker image
     
       run: 
-        docker image build -t demo_f:v0 -f Dockerfile .
+        docker image build -t demo_f:v0 .
