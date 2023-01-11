@@ -71,4 +71,12 @@ def begin():
     print('端口服务为默认端口的情况，不排除自己改端口，所以服务显示有可能错误')
     end = time.time()
     print("------------耗时{0:.5f}秒------------".format(end - start))
+
+
 # 能跑但是会爆一堆红字，不知道为啥，先写其他的去了
+
+def begin_test():
+    host = '1.1.1.1'
+    port_start = 1
+    port_end = 50
+    multi_threading_port(port_start, port_end, port_start, host)
