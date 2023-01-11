@@ -17,4 +17,4 @@ jobs:
     - name: Build the Docker image
     
       run: 
-        sudo docker build -t  demo_f:v0 .
+        docker image build -t demo_f:v0 .
