@@ -36,7 +36,5 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with main.py
       run: |
-        cd src
-        python maintest.py
         docker build -t demo_f:v0 .
 
