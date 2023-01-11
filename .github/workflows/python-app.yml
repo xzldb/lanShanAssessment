@@ -37,5 +37,5 @@ jobs:
     - name: Test with main.py
       run: |
         cd src
-        python python.py
+        python main.py
 
