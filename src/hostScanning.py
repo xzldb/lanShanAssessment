@@ -77,6 +77,7 @@ def begin():
         print("ip地址有误，请重新输入")
         sys.exit()
     host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
+    print(host_number)
     t = input("请输入你想沿当前ip往后查询多少个地址（最好不超过500）：")
     print('Start scanning......Please wait...')
     multi_threading_scanning(host_number, t)
@@ -85,7 +86,10 @@ def begin():
 
 
 def begin_test():
-    host_number = 168430093  # 1.1.1.1
-    t = 100
+    print("----------开始测试端口扫描功能--------------")
+    start = time.time()
+    host_number = 16843009  # 1.1.1.1
+    t = 20
     multi_threading_scanning(host_number, t)
-
+    end = time.time()
+    print("------------耗时{0:.5f}秒，端口扫描功能正常------------".format(end - start))
