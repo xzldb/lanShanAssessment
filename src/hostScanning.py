@@ -86,10 +86,10 @@ def begin():
 
 
 def begin_test():
-    print("----------开始测试端口扫描功能--------------")
+    print("----------开始测试主机发现功能--------------")
     start = time.time()
     host_number = 16843009  # 1.1.1.1
     t = 20
     multi_threading_scanning(host_number, t)
     end = time.time()
-    print("------------耗时{0:.5f}秒，端口扫描功能正常------------".format(end - start))
+    print("------------耗时{0:.5f}秒，主机发现功能正常------------".format(end - start))

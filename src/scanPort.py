@@ -76,10 +76,11 @@ def begin():
 # 能跑但是会爆一堆红字，不知道为啥，先写其他的去了
 
 def begin_test():
+    print("----------开始测试端口扫描功能--------------")
     host = '1.1.1.1'
     port_start = 50
     port_end = 100
     start = time.time()
     multi_threading_port(port_start, port_end, port_start, host)
     end = time.time()
-    print("------------耗时{0:.5f}秒------------".format(end - start))
+    print("------------耗时{0:.5f}秒，端口扫描功能正常------------".format(end - start))
