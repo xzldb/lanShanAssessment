@@ -8,6 +8,6 @@ if int(target) == 1:
 elif int(target) == 2:
     scanPort.begin()
 elif int(target) == 3:
-    webtitlescanning.begin()
+    webtitlescanning.gettitle()
 else:
     print('输入有误，请重新输入')
