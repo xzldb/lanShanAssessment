@@ -19,7 +19,11 @@ def scan_port(port, host, count=0):
     conn_result = sk.connect_ex((host, port))  # 尝试访问连接然后保存返回值，若为0则为端口开放
     if conn_result == 0:
         print('服务器{}的{}端口已开放'.format(host, port))
-        worktext+='服务器{}的{}端口已开放'.format(host, port)
+        system = sys.platform
+        if 'w' in system:
+            worktext+='服务器{}的{}端口已开放'.format(host, port)
+        else:
+            pass
         count += 1
         port_server(port)
         # print(sk.getsockname()) #显示套接字自己的地址
@@ -38,8 +42,11 @@ def multi_threading_port(port, port_end, port_start, host):
         port = int(port) + 1
     for t in threads:
         t.join()
-    text.insert(INSERT, worktext)
-    root2.mainloop()
+    if 'w' in system:
+        text.insert(INSERT, worktext)
+        root2.mainloop()
+    else:
+        pass
 
 # 查询端口服务字典
 def port_server(port_number):
@@ -61,7 +68,12 @@ def port_server(port_number):
     for p, s in port_servers_dic.items():
         if int(port_number) == p:
             print(f'该端口的服务为{s}')
-            worktext+=f'该端口的服务为{s}'+'\n'
+            if 'w' in system:
+                worktext+=f'该端口的服务为{s}'+'\n'
+            else:
+                pass
+
+
 
 
 # 开始
