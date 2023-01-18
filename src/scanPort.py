@@ -137,6 +137,9 @@ if 'w' in system:
     root2.title('hello')  # 窗口名字
     root2.geometry('+1360+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
     root2.resizable(True, True)  # 将窗口大小设置为可变/不可变
+    scrollbar_v = Scrollbar(root2)
+    scrollbar_v.pack(side=RIGHT, fill=Y)
+    scrollbar_h = Scrollbar(root2, orient=HORIZONTAL)
     text = Text(root2, width=50, height=30, undo=True, autoseparators=True)
     text.pack()
     root.mainloop()
