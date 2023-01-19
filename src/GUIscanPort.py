@@ -2,6 +2,8 @@ import socket
 import sys
 import threading
 import time
+from tkinter import *
+from tkinter.messagebox import *
 
 threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(65535)  # 最大信号量
@@ -11,11 +13,17 @@ count = 0
 
 #  扫描端口模块
 def scan_port(port, host, count=0):
+    global worktext
     sk = socket.socket()
     sk.settimeout(0.5)  # 等待端口响应时间
     conn_result = sk.connect_ex((host, port))  # 尝试访问连接然后保存返回值，若为0则为端口开放
     if conn_result == 0:
         print('服务器{}的{}端口已开放'.format(host, port))
+        system = sys.platform
+        if 'w' in system:
+            worktext+='服务器{}的{}端口已开放'.format(host, port)
+        else:
+            pass
         count += 1
         port_server(port)
         # print(sk.getsockname()) #显示套接字自己的地址
@@ -24,6 +32,7 @@ def scan_port(port, host, count=0):
 
 #  多线程
 def multi_threading_port(port, port_end, port_start, host):
+    global worktext
     for i in range(int(port_end) - int(port_start)):
         thread_max.acquire()
         t = threading.Thread(target=scan_port, args=(port, host,))
@@ -34,9 +43,12 @@ def multi_threading_port(port, port_end, port_start, host):
     for t in threads:
         t.join()
 
+    text.insert(INSERT, worktext)
+    root2.mainloop()
 
 # 查询端口服务字典
 def port_server(port_number):
+    global worktext
     port_servers_dic = {21: 'FTP（File Transfer Protocol，文件传输协议）', 22: 'SSH（Secure Shell Protocol，安全外壳协议）',
                         23: 'Telnet（远程终端协议）	', 25: 'STMP（Simple Mail Transfer Protocol，简单邮件传输协议）',
                         53: 'DNS（Domain Name System，域名系统）',
@@ -53,19 +65,25 @@ def port_server(port_number):
                         11211: 'Memcache服务	', 27017: 'MongoDB数据库	'}
     for p, s in port_servers_dic.items():
         if int(port_number) == p:
-            print(f'该端口的服务为{s}')
+            worktext+=f'该端口的服务为{s}'+'\n'
+
+
+
 
 
 # 开始
 def begin():
-    host = input('请输入服务器ip地址:')
-    ports = input('请输入要扫描的端口范围，格式0-65535:')
+    global root2
+    global e1
+    global e2
+    host=e1.get()
+    ports=e2.get()
     start = time.time()
     port_start, port_end = ports.split('-')  # 以’-‘为分割符
     h, o, s, t = host.split(".")
     if not 65535 >= int(port_end) > int(port_start) >= 0 or not 255 > int(h) > 0 or not 255 > int(
             o) > 0 or not 255 > int(s) > 0 or not 255 > int(t) > 0:
-        print("ip地址有误，请重新输入")
+        showinfo(title='test', message='您输入的ip地址或端口数有误')
         sys.exit()
     multi_threading_port(port_start, port_end, port_start, host)
     print('端口服务为默认端口的情况，不排除自己改端口，所以服务显示有可能错误')
@@ -75,12 +93,43 @@ def begin():
 
 # 能跑但是会爆一堆红字，不知道为啥，先写其他的去了
 
-def begin_test():
-    print("----------开始测试端口扫描功能--------------")
-    host = '1.1.1.1'
-    port_start = 50
-    port_end = 100
-    start = time.time()
-    multi_threading_port(port_start, port_end, port_start, host)
-    end = time.time()
-    print("------------耗时{0:.5f}秒，端口扫描功能正常------------".format(end - start))
+
+def gui():
+    global root
+    root.mainloop()
+
+
+
+worktext = ''  # 装载结果最后输出
+root = Tk()  # 生成主窗口
+root.geometry('300x300')  # 改变窗体大小（‘宽x高’）
+root.title('hello')  # 窗口名字
+root.geometry('+960+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
+root.resizable(True, True)  # 将窗口大小设置为可变/不可变
+# 第一个输入框位置功能
+e1 = Entry(root)
+e1.place(x=100, y=20)  # pack-包装 grid-网格 place-位置
+e1.delete(0, END)  # 删除文本框里的值
+e1.insert(0, '在这里输入ip地址...')
+# 第二个输入框位置功能
+e2 = Entry(root)
+e2.place(x=100, y=40)
+e2.delete(0, END)  # 删除文本框里的值
+e2.insert(0, '在这里输入查询端口范围...')
+# 两个按钮位置及功能
+Button(root, text='ip查询起始', width=10, command=begin).place(x=10, y=250)
+Button(root, text='点击退出', width=10, command=root.quit).place(x=200, y=250)
+root2 = Tk()
+root2.geometry('300x300')  # 改变窗体大小（‘宽x高’）
+root2.title('hello')  # 窗口名字
+root2.geometry('+1360+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
+root2.resizable(True, True)  # 将窗口大小设置为可变/不可变
+scrollbar_v = Scrollbar(root2)
+scrollbar_v.pack(side=RIGHT, fill=Y)
+scrollbar_h = Scrollbar(root2, orient=HORIZONTAL)
+text = Text(root2, width=50, height=30, undo=True, autoseparators=True)
+text.pack()
+root.mainloop()
+
+
+
