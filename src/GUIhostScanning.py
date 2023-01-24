@@ -85,7 +85,7 @@ root.geometry('300x300')  # 改变窗体大小（‘宽x高’）
 root.title('欢迎使用主机发现功能')  # 窗口名字
 root.geometry('+960+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
 root.resizable(True, True)  # 将窗口大小设置为可变/不可变
-la0 = Label(root, text='ip起始地址').place(x=20,y=20)
+Label(root, text='ip起始地址').place(x=20, y=20)
 la1 = Label(root, text='ip寻找数量').place(x=20,y=40)
 img_gif = PhotoImage(file = 'img_gif.gif')
 label_img = Label(root, image = img_gif).place(x=20,y=60)

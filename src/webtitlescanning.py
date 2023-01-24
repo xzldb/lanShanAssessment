@@ -3,7 +3,7 @@ import urllib.request
 
 
 def gettitle():
-    url=input("请输入要查询的url：")
+    url = input("请输入要查询的url：")
     response = urllib.request.urlopen(url)
     html = response.read()
     html = html.decode()
@@ -22,5 +22,3 @@ def gettitletest():
     tag = tag[:-8]
     tag = tag[7:]
     print(tag)
-
-

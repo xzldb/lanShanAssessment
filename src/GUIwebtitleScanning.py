@@ -4,7 +4,7 @@ from tkinter import *
 
 
 def gettitle():
-    url=e1.get()
+    url = e1.get()
     response = urllib.request.urlopen(url)
     html = response.read()
     html = html.decode()
@@ -20,9 +20,9 @@ root.geometry('300x300')  # 改变窗体大小（‘宽x高’）
 root.title('欢迎使用webtitle搜索')  # 窗口名字
 root.geometry('+960+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
 root.resizable(True, True)  # 将窗口大小设置为可变/不可变
-la0 = Label(root, text='网址url').place(x=20,y=20)
-img_gif = PhotoImage(file = 'img_gif.gif')
-label_img = Label(root, image = img_gif).place(x=20,y=60)
+la0 = Label(root, text='网址url').place(x=20, y=20)
+img_gif = PhotoImage(file='img_gif.gif')
+label_img = Label(root, image=img_gif).place(x=20, y=60)
 # 第一个输入框位置功能
 e1 = Entry(root)
 e1.place(x=100, y=20)  # pack-包装 grid-网格 place-位置

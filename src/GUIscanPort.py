@@ -21,7 +21,7 @@ def scan_port(port, host, count=0):
         print('服务器{}的{}端口已开放'.format(host, port))
         system = sys.platform
         if 'w' in system:
-            portWorkText+='服务器{}的{}端口已开放'.format(host, port)
+            portWorkText += '服务器{}的{}端口已开放'.format(host, port)
         else:
             pass
         count += 1
@@ -46,6 +46,7 @@ def multi_threading_port(port, port_end, port_start, host):
     text.insert(INSERT, portWorkText)
     root2.mainloop()
 
+
 # 查询端口服务字典
 def port_server(port_number):
     global portWorkText
@@ -65,10 +66,7 @@ def port_server(port_number):
                         11211: 'Memcache服务	', 27017: 'MongoDB数据库	'}
     for p, s in port_servers_dic.items():
         if int(port_number) == p:
-            portWorkText+=f'该端口的服务为{s}'+'\n'
-
-
-
+            portWorkText += f'该端口的服务为{s}' + '\n'
 
 
 # 开始
@@ -76,8 +74,8 @@ def portbegin():
     global root2
     global e1
     global e2
-    host=e1.get()
-    ports=e2.get()
+    host = e1.get()
+    ports = e2.get()
     start = time.time()
     port_start, port_end = ports.split('-')  # 以’-‘为分割符
     h, o, s, t = host.split(".")
@@ -99,17 +97,16 @@ def gui():
     root.mainloop()
 
 
-
 portWorkText = ''  # 装载结果最后输出
 root = Tk()  # 生成主窗口
 root.geometry('300x300')  # 改变窗体大小（‘宽x高’）
 root.title('欢迎使用端口扫描功能')  # 窗口名字
 root.geometry('+960+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
 root.resizable(True, True)  # 将窗口大小设置为可变/不可变
-la0 = Label(root, text='ip地址').place(x=20,y=20)
-la1 = Label(root, text='格式：1-65535').place(x=20,y=40)
-img_gif = PhotoImage(file = 'img_gif.gif')
-label_img = Label(root, image = img_gif).place(x=20,y=60)
+la0 = Label(root, text='ip地址').place(x=20, y=20)
+la1 = Label(root, text='格式：1-65535').place(x=20, y=40)
+img_gif = PhotoImage(file='img_gif.gif')
+label_img = Label(root, image=img_gif).place(x=20, y=60)
 # 第一个输入框位置功能
 e1 = Entry(root)
 e1.place(x=100, y=20)  # pack-包装 grid-网格 place-位置
@@ -134,6 +131,3 @@ scrollbar_h = Scrollbar(root2, orient=HORIZONTAL)
 text = Text(root2, width=50, height=30, undo=True, autoseparators=True)
 text.pack()
 root.mainloop()
-
-
-

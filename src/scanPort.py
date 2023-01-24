@@ -85,8 +85,11 @@ def begin_test():
     end = time.time()
     print("------------耗时{0:.5f}秒，端口扫描功能正常------------".format(end - start))
 
+
 _print = print
 mutex = threading.Lock()
+
+
 def print(text, *args, **kw):
     with mutex:
         _print(text, *args, **kw)
