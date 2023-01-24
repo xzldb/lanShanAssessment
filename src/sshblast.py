@@ -39,10 +39,10 @@ def multi_ssh(tempuser, temppasswd, target):  # 多线程
 
 def begin():
     global work
-    target = input(' 请输入需要ssh爆破的地址:')
+    host = input(' 请输入需要ssh爆破的地址:')
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
-    multi_ssh(tempuser, temppasswd, target)
+    multi_ssh(tempuser, temppasswd, host)
     print(work)
 
 
