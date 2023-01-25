@@ -3,8 +3,10 @@ import hostScanning
 import webtitlescanning
 import sshblast
 import mysqlblast
+import mssqlblast
+import cmsscan
 
-target = input("请输入来选择功能：1=主机发现及操作系统识别，2=端口扫描及端口服务识别,3=webtitle探测，4=ssh密码爆破：")
+target = input("请输入来选择功能：1=主机发现及操作系统识别，2=端口扫描及端口服务识别,3=webtitle探测，4=ssh密码爆破，5=mysql密码爆破，6=mssql密码爆破，7=web识别cms：")
 if int(target) == 1:
     hostScanning.begin()
 elif int(target) == 2:
@@ -15,5 +17,9 @@ elif int(target) == 4:
     sshblast.begin()
 elif int(target) == 5:
     mysqlblast.begin()
+elif int(target) == 6:
+    mssqlblast.begin()
+elif int(target) == 7:
+    cmsscan.begin()
 else:
     print('输入有误，请重新输入')

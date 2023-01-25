@@ -26,12 +26,18 @@ def ping_check(ip):
             print('The host {0} is up'.format(ip))
             if int(ttl) <= 32:
                 print('对方系统是WIN95/98/ME')
+                return 'The host {0} is up'.format(ip)+'对方系统是WIN95/98/ME'
             elif int(ttl) <= 64:
                 print('对方系统是LINUX')
+                return 'The host {0} is up'.format(ip) + '对方系统是LINUX'
             elif int(ttl) <= 128:
                 print('对方系统是WINNT/2K/XP')
+                return 'The host {0} is up'.format(ip) + '对方系统是WINNT/2K/XP'
             elif int(ttl) <= 256:
                 print('对方系统是UNIX')
+                return 'The host {0} is up'.format(ip) + '对方系统是UNIX'
+
+
     elif 'l' in system:
         check = Popen('ping -c2 {0}\n'.format(ip), stdin=PIPE, stdout=PIPE, shell=True)
         # 第一个参数为shell脚本执行ping ip的命令，同时必须将shell的参数设为True
@@ -77,12 +83,16 @@ def begin():
         print("ip地址有误，请重新输入")
         sys.exit()
     host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
-    print(host_number)
     t = input("请输入你想沿当前ip往后查询多少个地址（最好不超过500）：")
     print('Start scanning......Please wait...')
     multi_threading_scanning(host_number, t)
     end = time.time()
     print("------------耗时{0:.5f}秒------------".format(end - start))
+
+def GUIbegin(host,y):
+    h, o, s, t = host.split('.')
+    host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
+    return multi_threading_scanning(host_number,y)
 
 
 def begin_test():
@@ -97,8 +107,6 @@ def begin_test():
 
 _print = print
 mutex = threading.Lock()
-
-
 def print(text, *args, **kw):
     with mutex:
         _print(text, *args, **kw)

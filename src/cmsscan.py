@@ -1,7 +1,7 @@
 import requests
 import hashlib
 import threading
-
+import time
 threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(1000000)
 '''------------------------指纹库内容------------------------'''
@@ -107,7 +107,9 @@ def cmsScan(url):
             md5.update(res[1])
             rmd5 = md5.hexdigest()
             if cms_md5 == rmd5:
-                print('{}其CMS类型为:{}'.format(url, v))
+                print('{}其CMS类型为:{}'.format(url, cms_name))
+            if res == None:
+                print('{}暂时未搜索到其的cms地址'.format(url))
 
 
 def mulit_ssh(tempip):
@@ -123,11 +125,17 @@ def mulit_ssh(tempip):
 
 
 def begin():
+    timestart=time.time()
+    print("--------开始进行cms扫描,这可能会花费一些时间,请耐心等待----------")
     try:
         tempip = open('ip.txt', 'r')
         mulit_ssh(tempip)
     except:
-        print("请在ip文件中输入正确的网址或者是ip地址")
+        print("请在源码文件目录下中的ip.txt目录中加入想要查找的ip地址")
+
+    timeend=time.time()
+    print("------------耗时{0:.5f}秒，主机发现功能正常------------".format(timeend - timestart))
+
 
 
 begin()

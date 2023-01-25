@@ -17,9 +17,10 @@ def scan_port(port, host, count=0):
     if conn_result == 0:
         print('服务器{}的{}端口已开放'.format(host, port))
         count += 1
-        port_server(port)
         # print(sk.getsockname()) #显示套接字自己的地址
-    sk.close()
+        sk.close()
+        return '服务器{}的{}端口已开放'.format(host, port) + port_server(port)
+
 
 
 #  多线程
@@ -54,6 +55,7 @@ def port_server(port_number):
     for p, s in port_servers_dic.items():
         if int(port_number) == p:
             print(f'该端口的服务为{s}')
+            return f'该端口的服务为{s}'
 
 
 # 开始
@@ -71,6 +73,11 @@ def begin():
     print('端口服务为默认端口的情况，不排除自己改端口，所以服务显示有可能错误')
     end = time.time()
     print("------------耗时{0:.5f}秒------------".format(end - start))
+
+def GUIbegin(host,ports):
+    port_start, port_end = ports.split('-')  # 以’-‘为分割符
+    return multi_threading_port(port_start, port_end, port_start, host)
+
 
 
 # 能跑但是会爆一堆红字，不知道为啥，先写其他的去了
