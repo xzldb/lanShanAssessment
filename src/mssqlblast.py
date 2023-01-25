@@ -39,5 +39,5 @@ def multi_ssh(tempuser, temppasswd, host,port):
             t.join()
     print(worktext)
 
-worktext='1'
+worktext=''
 begin()
