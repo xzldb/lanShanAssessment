@@ -137,5 +137,3 @@ def begin():
     print("------------耗时{0:.5f}秒，主机发现功能正常------------".format(timeend - timestart))
 
 
-
-begin()
