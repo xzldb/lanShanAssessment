@@ -30,3 +30,4 @@ def gettitletest():
     tag = tag[:-8]
     tag = tag[7:]
     print(tag)
+

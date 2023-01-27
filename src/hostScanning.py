@@ -77,7 +77,6 @@ def begin():
         print("ip地址有误，请重新输入")
         sys.exit()
     host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
-    print(host_number)
     t = input("请输入你想沿当前ip往后查询多少个地址（最好不超过500）：")
     print('Start scanning......Please wait...')
     multi_threading_scanning(host_number, t)

@@ -136,4 +136,9 @@ def begin():
     timeend=time.time()
     print("------------耗时{0:.5f}秒，主机发现功能正常------------".format(timeend - timestart))
 
+_print = print
+mutex = threading.Lock()
+def print(text, *args, **kw):
+    with mutex:
+        _print(text, *args, **kw)
 

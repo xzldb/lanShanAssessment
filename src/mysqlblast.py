@@ -37,6 +37,10 @@ def multi_ssh(tempuser, temppasswd, host,port):
             t.start()
         for t in threads:
             t.join()
-    print(worktext)
+    print('成功结果'+worktext)
 
-worktext='1'
+_print = print
+mutex = threading.Lock()
+def print(text, *args, **kw):
+    with mutex:
+        _print(text, *args, **kw)
