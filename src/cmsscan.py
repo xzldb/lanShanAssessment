@@ -112,7 +112,7 @@ def cmsScan(url):
                 print('{}暂时未搜索到其的cms地址'.format(url))
 
 
-def mulit_ssh(tempip):
+def mulit_cms(tempip):
     ipfile = tempip.readlines()
     for url in ipfile:
         url = url.split('\n')[0]  # 去掉ip后面自带的回车键
@@ -129,7 +129,7 @@ def begin():
     print("--------开始进行cms扫描,这可能会花费一些时间,请耐心等待----------")
     try:
         tempip = open('ip.txt', 'r')
-        mulit_ssh(tempip)
+        mulit_cms(tempip)
     except:
         print("请在源码文件目录下中的ip.txt目录中加入想要查找的ip地址")
 

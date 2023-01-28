@@ -13,7 +13,7 @@ def begin():
     port=input('请输入端口号')
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
-    multi_ssh(tempuser,temppasswd,host,port)
+    multi_mssql(tempuser, temppasswd, host, port)
 def mysqlblast(user,passwd,host,port):
     try:
         pymssql.connect(server=host,user=user,port=port,password=passwd,connect_timeout=1)
@@ -24,7 +24,7 @@ def mysqlblast(user,passwd,host,port):
 
 
 
-def multi_ssh(tempuser, temppasswd, host,port):
+def multi_mssql(tempuser, temppasswd, host, port):
     userfile = tempuser.readlines()
     passwdfile = temppasswd.readlines()
     for u in userfile:

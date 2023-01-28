@@ -39,12 +39,6 @@ def begin():
     print(multi_ssh(tempuser, temppasswd, host))
 
 
-def GUIbegin(host):
-    tempuser = open('用户名.txt', 'r')
-    temppasswd = open('密码库.txt', 'r')
-    return multi_ssh(tempuser, temppasswd, host)
-
-
 
 '''对print加锁,防止输出混乱'''
 _print = print

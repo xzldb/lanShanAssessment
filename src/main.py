@@ -1,5 +1,5 @@
-import scanPort
 import hostScanning
+import scanPort
 import webtitlescanning
 import sshblast
 import mysqlblast
