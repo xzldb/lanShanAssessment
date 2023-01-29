@@ -13,6 +13,8 @@ import requests
 import hashlib
 from tkinter import *
 import tkinter.ttk
+from tkinter.messagebox import *
+
 
 patternforwin = re.compile(r'TTL=[1-9][0-9]*')
 patternforlinux = re.compile(r'ttl=[1-9][0-9]*')
@@ -76,7 +78,6 @@ def ping_check(ip):
 
 # 多线程执行
 def multi_threading_scanning(host_number, t):
-    global worktext
     for i in range(1, int(t)):
         new_host_number = int(host_number) + i
         new_host = ipaddress.ip_network(new_host_number)  # 输出不为str类型的值，记得转换！！！
@@ -94,35 +95,30 @@ def multi_threading_scanning(host_number, t):
 
 # 开始
 def hostScanningbegin():
-    global host1, temp1,GUIhost,GUInumber,worktext
-    try:
-        host1=GUIhost
-        temp1=GUInumber
-    except:
-        host1 = input("Please input ip (示例：192.168.1.1): ")
-        temp1 = input("请输入你想沿当前ip往后查询多少个地址（最好不超过500）：")
-    finally:
-        start = time.time()
-        h, o, s, t = host1.split('.')
-        if not 255 >= int(h) >= 0 or not 255 >= int(o) >= 0 or not 255 >= int(s) >= 0 or not 255 >= int(t) >= 0:
-            print("ip地址有误，请重新输入")
-            sys.exit()
-        host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
-        print('Start scanning......Please wait...')
-        multi_threading_scanning(host_number, temp1)
-        end = time.time()
-        print("------------耗时{0:.5f}秒------------".format(end - start))
+    host=GUIhost
+    temp=GUInumber
+    start = time.time()
+    h, o, s, t = host.split('.')
+    if not 255 >= int(h) >= 0 or not 255 >= int(o) >= 0 or not 255 >= int(s) >= 0 or not 255 >= int(t) >= 0:
+        print("ip地址有误，请重新输入")
+        sys.exit()
+    host_number = 256 * 256 * 256 * int(h) + 256 * 256 * int(o) + 256 * int(s) + int(t)
+    print('Start scanning......Please wait...')
+    multi_threading_scanning(host_number, temp)
+    end = time.time()
+    print("------------耗时{0:.5f}秒------------".format(end - start))
 
 
 '''--------------------------------------端口扫描--------------------------------------------------'''
 
 
 def scan_port(port, host, count=0):
+    global worktext
     sk = socket.socket()
     sk.settimeout(0.5)  # 等待端口响应时间
     conn_result = sk.connect_ex((host, port))  # 尝试访问连接然后保存返回值，若为0则为端口开放
     if conn_result == 0:
-        print('服务器{}的{}端口已开放'.format(host, port))
+        worktext+='服务器{}的{}端口已开放'.format(host, port)
         count += 1
         port_server(port)
         # print(sk.getsockname()) #显示套接字自己的地址
@@ -140,10 +136,12 @@ def multi_threading_port(port, port_end, port_start, host):
         port = int(port) + 1
     for t in threads:
         t.join()
+    worktextprint()
 
 
 # 查询端口服务字典
 def port_server(port_number):
+    global worktext
     port_servers_dic = {21: 'FTP（File Transfer Protocol，文件传输协议）', 22: 'SSH（Secure Shell Protocol，安全外壳协议）',
                         23: 'Telnet（远程终端协议）	', 25: 'STMP（Simple Mail Transfer Protocol，简单邮件传输协议）',
                         53: 'DNS（Domain Name System，域名系统）',
@@ -160,13 +158,14 @@ def port_server(port_number):
                         11211: 'Memcache服务	', 27017: 'MongoDB数据库	'}
     for p, s in port_servers_dic.items():
         if int(port_number) == p:
-            print(f'该端口的服务为{s}')
+            worktext+=f'该端口的服务为{s}'+'\n'
 
 
 # 开始
 def scanPortbegin():
-    host = input('请输入服务器ip地址:')
-    ports = input('请输入要扫描的端口范围，格式0-65535:')
+    global worktext
+    host = GUIhost
+    ports = GUIports
     start = time.time()
     port_start, port_end = ports.split('-')  # 以’-‘为分割符
     h, o, s, t = host.split(".")
@@ -174,8 +173,9 @@ def scanPortbegin():
             o) > 0 or not 255 > int(s) > 0 or not 255 > int(t) > 0:
         print("ip地址有误，请重新输入")
         sys.exit()
+    worktext += '端口服务为默认端口的情况，不排除自己改端口，所以服务显示有可能错误'+'\n'
     multi_threading_port(port_start, port_end, port_start, host)
-    print('端口服务为默认端口的情况，不排除自己改端口，所以服务显示有可能错误')
+
     end = time.time()
     print("------------耗时{0:.5f}秒------------".format(end - start))
 
@@ -184,20 +184,22 @@ def scanPortbegin():
 
 
 def webtitlebegin():
-    url = input("请输入要查询的url：")
+    global worktext
+    url = GUIhost
     response = urllib.request.urlopen(url)
     html = response.read()
     html = html.decode()
     tag = re.search(r'<title>(.*?)</title>', html).group(0)
     tag = tag[:-8]
     tag = tag[7:]
-    print(tag)
-
+    worktext+=tag
+    worktextprint()
 
 '''----------------------------------------------ssh爆破-------------------------------------------'''
 
 
 def sshbrute(user, passw, host):
+    global worktext
     passw = str(passw)
     try:
         # 使用 paramiko.SSHClient 创建 ssh 对象
@@ -209,9 +211,10 @@ def sshbrute(user, passw, host):
         # 打印出成功登录的 用户名 和 密码
 
         print("login success! User:" + user, "Pass:" + passw)
+        worktext+="login success! User:" + user+"Pass:" + passw
     except:
         print("login failed!", "user:" + user, "pass:" + passw + '\n', end='')
-
+        worktext +="login failed!"+ "user:" + user+ "pass:" + passw + '\n'
 
 def multi_ssh(tempuser, temppasswd, target):  # 多线程
     userfile = tempuser.readlines()
@@ -224,10 +227,10 @@ def multi_ssh(tempuser, temppasswd, target):  # 多线程
             t.start()
         for t in threads:
             t.join()
-
+    worktextprint()
 
 def sshblastbegin():
-    host = input(' 请输入需要ssh爆破的地址:')
+    host = GUIhost
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
     print(multi_ssh(tempuser, temppasswd, host))
@@ -237,23 +240,26 @@ def sshblastbegin():
 
 
 def mysqlblastbegin():
-    host = input(' 请输入需要爆破的mysql的ip地址:')
+    host = GUIhost
     h, o, s, t = host.split('.')
     if not 255 >= int(h) >= 0 or not 255 >= int(o) >= 0 or not 255 >= int(s) >= 0 or not 255 >= int(t) >= 0:
         print("ip地址有误，请重新输入")
         sys.exit()
-    port = input('请输入端口号')
+    port = GUIport
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
     multi_mysql(tempuser, temppasswd, host, port)
 
 
 def mysqlblast(user, passwd, host, port):
+    global worktext
     try:
         pymysql.connect(server=host, user=user, port=port, password=passwd, connect_timeout=1)
         print("mysql:{}:{}:{} {}".format(host, port, user, passwd))
+        worktext+="mysql:{}:{}:{} {}".format(host, port, user, passwd)
     except Exception:
         print("mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败'))
+        worktext+="mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败')
         pass
 
 
@@ -268,6 +274,7 @@ def multi_mysql(tempuser, temppasswd, host, port):
             t.start()
         for t in threads:
             t.join()
+    worktextprint()
 
 
 '''---------------------------------------------mssql爆破------------------------------------'''
@@ -279,7 +286,7 @@ def mssqlblatbegin():
     if not 255 >= int(h) >= 0 or not 255 >= int(o) >= 0 or not 255 >= int(s) >= 0 or not 255 >= int(t) >= 0:
         print("ip地址有误，请重新输入")
         sys.exit()
-    port = input('请输入端口号')
+    port = GUIport
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
     multi_mssql(tempuser, temppasswd, host, port)
@@ -372,6 +379,7 @@ def getweb(url):  # 尝试连接url中的网页并得到网页的请求头信息
 
 
 def cmsScan(url):
+    global worktext
     # 首先通过robots文件来进行判定
     url_r = url + '/robots.txt'
     res = getweb(url_r)
@@ -379,15 +387,19 @@ def cmsScan(url):
         for robot in robots:
             if robot in res[2]:
                 print('{}-->其CMS类型为:{}'.format(url, robot))
+                worktext+='{}-->其CMS类型为:{}'.format(url, robot)+'\n'
     # 如果不存在，那就根据网页内容和请求头信息判定
     res = getweb(url)
     if res is not None:
         for k, v in head.items():
             if k in res[0]:
                 print('{}其CMS类型为:{}'.format(url, v))
+                worktext+='{}-->其CMS类型为:{}'.format(url, v)+'\n'
         for k, v in body.items():
             if k in res[2]:
                 print('{}其CMS类型为:{}'.format(url, v))
+                worktext+='{}-->其CMS类型为:{}'.format(url, v)+'\n'
+
         # 然后根据特定网址的内容判定
     for x in body_rule:
         cms_prefix = x.split('|', 3)[0]
@@ -398,7 +410,7 @@ def cmsScan(url):
         if res is not None:
             if cms_md5 in res[2]:
                 print('{}其CMS类型为:{}'.format(url, cms_name))
-
+                worktext+='{}-->其CMS类型为:{}'.format(url, cms_name)+'\n'
     # 最后根据MD5值判定
     for x in cms_rule:
         cms_prefix = x.split('|', 3)[0]
@@ -412,8 +424,12 @@ def cmsScan(url):
             rmd5 = md5.hexdigest()
             if cms_md5 == rmd5:
                 print('{}其CMS类型为:{}'.format(url, cms_name))
+                worktext+='{}-->其CMS类型为:{}'.format(url, cms_name)+'\n'
+
             if res is None:
                 print('{}暂时未搜索到其的cms地址'.format(url))
+                worktext+='{}暂时未搜索到其的cms地址'.format(url)
+
 
 
 def mulit_cms(tempip):
@@ -426,9 +442,10 @@ def mulit_cms(tempip):
         t.start()
     for t in threads:
         t.join()
+    worktextprint()
 
 
-def begin():
+def cmsbegin():
     timestart = time.time()
     print("--------开始进行cms扫描,这可能会花费一些时间,请耐心等待----------")
     try:
@@ -436,16 +453,19 @@ def begin():
         mulit_cms(tempip)
     except:
         print("请在源码文件目录下中的ip.txt目录中加入想要查找的ip地址")
-
     timeend = time.time()
     print("------------耗时{0:.5f}秒，主机发现功能正常------------".format(timeend - timestart))
+
+
 '''-------------GUI函数定义----------------'''
 GUIhost=''
-worktext='123'
+GUIport=''
+worktext=''
 GUInumber=''
+GUIports=''
 '''---------------窗口创建------------'''
 root = Tk()
-root.geometry('800x500')  # 改变窗体大小（‘宽x高’）
+root.geometry('800x570')  # 改变窗体大小（‘宽x高’）
 root.title('starlight的网络扫描器')  # 窗口名字
 root.geometry('+500+300')  # 改变窗体位置（‘+横坐标+纵坐标’）
 root.resizable(False, False)  # 将窗口大小设置为可变/不可变
@@ -468,6 +488,14 @@ numberENtry=Entry(root,width=20)
 numberENtry.place(x=330,y=80)
 '''-------提示-------------'''
 labeltips=Label(root,text='开始前请阅读下方注意事项!!!',fg='red').place(x=470,y=80)
+labeltip1=Label(root,text='1.主机发现功能需要填入ip以及往后扫描的数量').place(x=10,y=450)
+labeltip2=Label(root,text='2.端口扫描需要填入ip和扫描端口范围').place(x=10,y=470)
+labeltip3=Label(root,text='3.webtitle探测和ssh密码爆破只需要输入目标url或者ip地址').place(x=10,y=490)
+labeltip4=Label(root,text='4.mysql和mssql需要输入目标ip地址和准确端口号').place(x=10,y=510)
+labeltip5=Label(root,text='5.cms识别在当前目录下的ip文件中输入url').place(x=10,y=530)
+labeltip6=Label(root,text='6.密码爆破需要的时间较长，为了方便演示，密码文件设置的较为简陋，可自行添加').place(x=10,y=550)
+
+
 '''-------操作功能选择-----------'''
 studentClasses = {'主机发现及操作系统识别', '端口扫描及端口服务识别', 'webtitle探测', 'ssh密码爆破', 'mysql密码爆破',
                   'mssql密码爆破', 'web识别cms'}
@@ -475,29 +503,56 @@ comboPart = tkinter.ttk.Combobox(root, width=50, value=tuple(studentClasses))
 labelpart = Label(root, text='功能选择:').place(x=10, y=80)
 comboPart.place(x=80, y=80, width=150, height=30)
 
+
 def getwork():
     global GUIhost
     global GUInumber
+    global GUIports
     GUIhost=ipEntry.get()
     GUInumber=numberENtry.get()
+    GUIports=portnumberEntry.get()
+    GUIport=portEntry.get()
 
 def partchoose():
     global worktext
     part = comboPart.get()
     print(part)
+    getwork()
     if part == '主机发现及操作系统识别':
-        print('开始进行'+part+'功能，请耐心等待')
-        getwork()
+        worktext=''
         hostScanningbegin()
+    elif part =='端口扫描及端口服务识别':
+        worktext = ''
+        scanPortbegin()
+    elif part == 'webtitle探测':
+        worktext = ''
+        webtitlebegin()
+    elif part == 'ssh密码爆破':
+        worktext = ''
+        sshblastbegin()
+    elif part == 'mysql密码爆破':
+        worktext = ''
+        mysqlblastbegin()
+    elif part == 'mssql密码爆破':
+        worktext = ''
+        mssqlblatbegin()
+    elif part == 'web识别cms':
+        worktext = ''
+        cmsbegin()
+def clearText():
+    workbox.delete('1.0','end')
 choosebotton=Button(root,text='开始',width=20,command=partchoose).place(x=635,y=80)
+clearbotton=Button(root,text='清屏',width=20,command=clearText).place(x=635,y=450)
 
 def worktextprint():
     global worktext
-    workbox.insert(0,worktext)
+    workbox.insert(INSERT,worktext)
+def clearText():
+    workbox.delete('1.0','end')
 
 
 
 '''-------输出环境-----------'''
-workbox=tkinter.Listbox(root,width=108)
+workbox=tkinter.Text(root,width=108)
 workbox.place(x=20,y=120)
 root.mainloop()
