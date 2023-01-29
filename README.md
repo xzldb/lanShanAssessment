@@ -1,6 +1,6 @@
 代码文件存放在src文件夹里
 
-开头有GUI的为面向windows的GUI程序，可以单独打开并运行
+GUI文件为专门面向windows的GUI程序，可以在windows上执行
 
 针对linux系统的部分系统差异做了代码的修改，能自动识别运行系统，即使是windows或者是linux系统上都能够流畅运行
 
