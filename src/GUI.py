@@ -22,57 +22,30 @@ threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(65535)  # 最大信号量
 count = 0
 
-_print = print
-mutex = threading.Lock()
-
-
-def print(text, *args, **kw):
-    with mutex:
-        _print(text, *args, **kw)
 
 
 '''---------------------------------------主机发现-----------------------------------------'''
 
 def ping_check(ip):
     global worktext
-    system = sys.platform
-    if 'w' in system:
-        check = Popen('ping {0}\n'.format(ip), stdin=PIPE, stdout=PIPE, shell=True)
-        # 第一个参数为shell脚本执行ping ip的命令，同时必须将shell的参数设为True
-        # stdin与stdout为输入输出命令同时用PIPE将一个函数结果直接导入另一个函数
-        data = check.stdout.read()
-        data = data.decode('GBK')  # 将前面传入的数据以gbk格式进行解码
-        if 'TTL' in data:  # 若data中包含ttl，证明主机存活，返回目标主机ip地址
-            temp2 = re.search(patternforwin, data).group(0)
-            ttl = temp2.split('=')[1]
-            worktext += 'The host {0} is up'.format(ip)
-            if int(ttl) <= 32:
-                worktext += '对方系统是WIN95/98/ME' +'\n'
-            elif int(ttl) <= 64:
-                worktext += '对方系统是LINUX'+'\n'
-            elif int(ttl) <= 128:
-                worktext += '对方系统是WINNT/2K/XP'+'\n'
-            elif int(ttl) <= 256:
-                worktext += '对方系统是UNIX'+'\n'
+    check = Popen('ping {0}\n'.format(ip), stdin=PIPE, stdout=PIPE, shell=True)
+    # 第一个参数为shell脚本执行ping ip的命令，同时必须将shell的参数设为True
+    # stdin与stdout为输入输出命令同时用PIPE将一个函数结果直接导入另一个函数
+    data = check.stdout.read()
+    data = data.decode('GBK')  # 将前面传入的数据以gbk格式进行解码
+    if 'TTL' in data:  # 若data中包含ttl，证明主机存活，返回目标主机ip地址
+        temp2 = re.search(patternforwin, data).group(0)
+        ttl = temp2.split('=')[1]
+        worktext += 'The host {0} is up'.format(ip)
+        if int(ttl) <= 32:
+            worktext += '对方系统是WIN95/98/ME' +'\n'
+        elif int(ttl) <= 64:
+            worktext += '对方系统是LINUX'+'\n'
+        elif int(ttl) <= 128:
+            worktext += '对方系统是WINNT/2K/XP'+'\n'
+        elif int(ttl) <= 256:
+            worktext += '对方系统是UNIX'+'\n'
 
-    elif 'l' in system:
-        check = Popen('ping -c2 {0}\n'.format(ip), stdin=PIPE, stdout=PIPE, shell=True)
-        # 第一个参数为shell脚本执行ping ip的命令，同时必须将shell的参数设为True
-        # stdin与stdout为输入输出命令同时用PIPE将一个函数结果直接导入另一个函数
-        data = check.stdout.read()
-        data = data.decode('GBK')  # 将前面传入的数据以gbk格式进行解码
-        if 'ttl' in data:  # 若data中包含ttl，证明主机存活，返回目标主机ip地址
-            temp = re.search(patternforlinux, data).group(0)
-            ttl = temp.split('=')[1]
-            print('The host {0} is up'.format(ip))
-            if int(ttl) <= 32:
-                print('对方系统是WIN95/98/ME')
-            elif int(ttl) <= 64:
-                print('对方系统是LINUX')
-            elif int(ttl) <= 128:
-                print('对方系统是WINNT/2K/XP')
-            elif int(ttl) <= 256:
-                print('对方系统是UNIX')
 # ping检测
 
 
@@ -200,6 +173,7 @@ def webtitlebegin():
 
 def sshbrute(user, passw, host):
     global worktext
+    global worksucesstext
     passw = str(passw)
     try:
         # 使用 paramiko.SSHClient 创建 ssh 对象
@@ -209,9 +183,8 @@ def sshbrute(user, passw, host):
         # 登录 ssh，连接失败则抛出异常跳转到except并输出匹配错误的结果
         ssh.connect(hostname=host, port=22, username=user, password=passw, timeout=1)
         # 打印出成功登录的 用户名 和 密码
-
         print("login success! User:" + user, "Pass:" + passw)
-        worktext+="login success! User:" + user+"Pass:" + passw
+        worksucesstext+="login success! User:" + user+"Pass:" + passw
     except:
         print("login failed!", "user:" + user, "pass:" + passw + '\n', end='')
         worktext +="login failed!"+ "user:" + user+ "pass:" + passw + '\n'
@@ -228,6 +201,7 @@ def multi_ssh(tempuser, temppasswd, target):  # 多线程
         for t in threads:
             t.join()
     worktextprint()
+    worksucesstextprint()
 
 def sshblastbegin():
     host = GUIhost
@@ -253,12 +227,11 @@ def mysqlblastbegin():
 
 def mysqlblast(user, passwd, host, port):
     global worktext
+    global worksucesstext
     try:
         pymysql.connect(server=host, user=user, port=port, password=passwd, connect_timeout=1)
-        print("mysql:{}:{}:{} {}".format(host, port, user, passwd))
-        worktext+="mysql:{}:{}:{} {}".format(host, port, user, passwd)+'\n'
+        worksucesstext+="mysql:{}:{}:{} {}".format(host, port, user, passwd)+'\n'
     except Exception:
-        print("mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败'))
         worktext+="mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败')+'\n'
         pass
 
@@ -275,6 +248,7 @@ def multi_mysql(tempuser, temppasswd, host, port):
         for t in threads:
             t.join()
     worktextprint()
+    worksucesstextprint()
 
 
 '''---------------------------------------------mssql爆破------------------------------------'''
@@ -293,10 +267,11 @@ def mssqlblatbegin():
 
 
 def mssqlblast(user, passwd, host, port):
+    global worksucesstext
     global worktext
     try:
         pymssql.connect(server=host, user=user, port=port, password=passwd, connect_timeout=1)
-        worktext+="mssql:{}:{}:{} {}".format(host, port, user, passwd)+'\n'
+        worksucesstext+="mssql:{}:{}:{} {}".format(host, port, user, passwd)+'\n'
     except Exception:
         worktext+="mssql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd + '尝试连接失败')+'\n'
         pass
@@ -314,6 +289,7 @@ def multi_mssql(tempuser, temppasswd, host, port):
         for t in threads:
             t.join()
     worktextprint()
+    worksucesstextprint()
 
 
 '''------------------------------------------cms扫描识别-----------------------------------------------'''
@@ -401,7 +377,6 @@ def cmsScan(url):
             if k in res[2]:
                 print('{}其CMS类型为:{}'.format(url, v))
                 worktext+='{}-->其CMS类型为:{}'.format(url, v)+'\n'
-
         # 然后根据特定网址的内容判定
     for x in body_rule:
         cms_prefix = x.split('|', 3)[0]
@@ -465,6 +440,7 @@ GUIport=''
 worktext=''
 GUInumber=''
 GUIports=''
+worksucesstext=None
 '''---------------窗口创建------------'''
 root = Tk()
 root.geometry('800x570')  # 改变窗体大小（‘宽x高’）
@@ -553,7 +529,11 @@ def worktextprint():
 def clearText():
     workbox.delete('1.0','end')
 
-
+def worksucesstextprint():
+    if worksucesstext != None:
+        workbox.insert(INSERT,worksucesstext)
+    else:
+        workbox.insert(INSERT,'未得出结果，请尝试扩充密码库及用户库后再试~')
 
 '''-------输出环境-----------'''
 workbox=tkinter.Text(root,width=108)
