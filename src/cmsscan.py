@@ -134,7 +134,7 @@ def begin():
         print("请在源码文件目录下中的ip.txt目录中加入想要查找的ip地址")
 
     timeend=time.time()
-    print("------------耗时{0:.5f}秒，主机发现功能正常------------".format(timeend - timestart))
+    print("------------耗时{0:.5f}秒，cms功能完成------------".format(timeend - timestart))
 
 _print = print
 mutex = threading.Lock()

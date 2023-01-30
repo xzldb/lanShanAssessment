@@ -15,11 +15,10 @@ def begin():
     temppasswd = open('密码库.txt', 'r')
     multi_mysql(tempuser, temppasswd, host, port)
 def mysqlblast(user,passwd,host,port):
-    global worktext
+
     try:
         pymysql.connect(server=host,user=user,port=port,password=passwd,connect_timeout=1)
-        print( "mysql:{}:{}:{} {}".format(host, port, user, passwd))
-        worktext+="mysql:{}:{}:{} {}".format(host, port, user, passwd)
+        print( "mysql成功:{}:{}:{} {}".format(host, port, user, passwd))
     except Exception as e:
         print("mysql:{}:{} 用户名:{} 密码{}".format(host, port, user, passwd+'尝试连接失败'))
         pass
@@ -37,7 +36,6 @@ def multi_mysql(tempuser, temppasswd, host, port):
             t.start()
         for t in threads:
             t.join()
-    print('成功结果'+worktext)
 
 _print = print
 mutex = threading.Lock()

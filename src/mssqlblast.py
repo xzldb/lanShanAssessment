@@ -41,3 +41,4 @@ mutex = threading.Lock()
 def print(text, *args, **kw):
     with mutex:
         _print(text, *args, **kw)
+
