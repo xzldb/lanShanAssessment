@@ -36,7 +36,7 @@ def begin():
     host = input(' 请输入需要ssh爆破的地址:')
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
-    print(multi_ssh(tempuser, temppasswd, host))
+    multi_ssh(tempuser, temppasswd, host)
 
 
 

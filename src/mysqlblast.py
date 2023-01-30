@@ -10,7 +10,7 @@ def begin():
     if not 255 >= int(h) >= 0 or not 255 >= int(o) >= 0 or not 255 >= int(s) >= 0 or not 255 >= int(t) >= 0:
         print("ip地址有误，请重新输入")
         sys.exit()
-    port=input('请输入端口号')
+    port=input('请输入端口号:')
     tempuser = open('用户名.txt', 'r')
     temppasswd = open('密码库.txt', 'r')
     multi_mysql(tempuser, temppasswd, host, port)
